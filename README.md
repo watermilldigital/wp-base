@@ -27,7 +27,7 @@ Each feature is one file in `src/`:
 | `environment.php` | Anywhere `WP_ENVIRONMENT_TYPE` isn't `production`: sets noindex on every page and blocks all outgoing mail, logging each blocked email to `debug.log`. |
 | `disable-comments.php` | Turns off comments and pingbacks everywhere, and removes them from wp-admin and the dashboard. |
 | `disable-emoji.php` | Removes WordPress's emoji detection script and styles. |
-| `webp-uploads.php` | Converts uploaded JPEGs and PNGs to WebP, keeping the original as well. WordPress's own re-encoding does the compression, so no optimisation plugin is needed. |
+| `webp-uploads.php` | Converts uploaded JPEGs to WebP, keeping the original JPEG as well. The re-encode is the upload compression, so no optimisation plugin is needed. PNGs stay PNG: lossy WebP makes logos and screenshots larger. |
 | `varnish-purge.php` | Cloudways only (no-op elsewhere): purges the whole Varnish cache when published content, terms, menus or the Customizer change, and adds a "Purge cache" admin bar button. |
 | `login-limit.php` | Locks an IP out of wp-login.php for 15 minutes after 5 failed logins. Reads the real IP from Cloudflare's `CF-Connecting-IP` header, but only when the request came from a Cloudflare address. |
 
