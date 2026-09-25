@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v1.0.2-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v1.0.3-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
@@ -27,7 +27,9 @@ Each feature is one file in `src/`:
 | `environment.php` | Anywhere `WP_ENVIRONMENT_TYPE` isn't `production`: sets noindex on every page and blocks all outgoing mail, logging each blocked email to `debug.log`. |
 | `disable-comments.php` | Turns off comments and pingbacks everywhere, and removes them from wp-admin and the dashboard. |
 | `disable-emoji.php` | Removes WordPress's emoji detection script and styles. |
-| `webp-uploads.php` | Converts uploaded JPEGs to WebP, keeping the original JPEG as well. |
+| `webp-uploads.php` | Converts uploaded JPEGs and PNGs to WebP, keeping the original as well. WordPress's own re-encoding does the compression, so no optimisation plugin is needed. |
+| `varnish-purge.php` | Cloudways only (no-op elsewhere): purges the whole Varnish cache when published content, terms, menus or the Customizer change, and adds a "Purge cache" admin bar button. |
+| `login-limit.php` | Locks an IP out of wp-login.php for 15 minutes after 5 failed logins. Reads the real IP from Cloudflare's `CF-Connecting-IP` header, but only when the request came from a Cloudflare address. |
 
 ## Install
 
