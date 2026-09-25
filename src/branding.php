@@ -2,7 +2,8 @@
 /**
  * Replaces WordPress branding with WaterMill's: the login logo, "— WordPress"
  * in page titles, the admin bar W menu and "Howdy", the admin footer, the dashboard's
- * WordPress panels, and the "WordPress" sender name on system emails.
+ * WordPress panels (with a WaterMill contact widget in their place), and the
+ * "WordPress" sender name on system emails.
  */
 
 /*
@@ -58,7 +59,52 @@ add_action(
 		remove_action( 'welcome_panel', 'wp_welcome_panel' );
 	}
 );
-add_action( 'wp_dashboard_setup', fn() => remove_meta_box( 'dashboard_primary', 'dashboard', 'side' ) );
+
+/*
+ * Dashboard: a WaterMill contact widget, first in the main column (users can still
+ * drag it elsewhere; WordPress remembers their order).
+ */
+add_action(
+	'wp_dashboard_setup',
+	function (): void {
+		global $wp_meta_boxes;
+
+		remove_meta_box( 'dashboard_primary', 'dashboard', 'side' );
+
+		wp_add_dashboard_widget(
+			'wp_base_watermill',
+			'WaterMill Digital',
+			function (): void {
+				?>
+				<p><img src="<?php echo esc_url( plugins_url( 'assets/watermill-logo.svg', dirname( __DIR__ ) . '/wp-base.php' ) ); ?>" alt="WaterMill Digital" width="176" height="24"></p>
+				<p>Need a change, a fix or some advice? Get in touch. We built this site, so we know it inside out.</p>
+				<p>
+					<span class="dashicons dashicons-email" aria-hidden="true"></span>
+					<a href="mailto:ben@watermilldigital.com">ben@watermilldigital.com</a><br>
+					<span class="dashicons dashicons-admin-site-alt3" aria-hidden="true"></span>
+					<a href="https://watermilldigital.com" target="_blank" rel="noopener">watermilldigital.com</a>
+				</p>
+				<?php
+			}
+		);
+
+		$core = $wp_meta_boxes['dashboard']['normal']['core'];
+		$wp_meta_boxes['dashboard']['normal']['core'] = array( 'wp_base_watermill' => $core['wp_base_watermill'] ) + $core; // phpcs:ignore WordPress.WP.GlobalVariablesOverride.Prohibited -- reordering is the point.
+	}
+);
+
+// A user with a saved dashboard layout would get the widget at the bottom of a column. Until
+// their layout includes it (i.e. they've moved it themselves), put it first in the main column.
+add_filter(
+	'get_user_option_meta-box-order_dashboard',
+	function ( $order ) {
+		if ( is_array( $order ) && ! str_contains( implode( ',', $order ), 'wp_base_watermill' ) ) {
+			$order['normal'] = ltrim( 'wp_base_watermill,' . ( $order['normal'] ?? '' ), ',' );
+		}
+
+		return $order;
+	}
+);
 
 // System emails from "WordPress" come from the site name instead. A name set by another plugin is left alone.
 add_filter( 'wp_mail_from_name', fn( string $name ): string => 'WordPress' === $name ? wp_specialchars_decode( get_bloginfo( 'name' ), ENT_QUOTES ) : $name );
