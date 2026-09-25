@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.0.1-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.0.2-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
@@ -98,7 +98,7 @@ composer check   # phpstan + phpcs (WordPress coding standards)
 
 To add a feature, drop a new file in `src/`. It loads automatically.
 
-Release by bumping the version badge at the top of this README, then tagging (`git tag v1.1.0 && git push origin v1.1.0`). The badge is static because shields.io can't read tags from a private repo. After tagging, run `composer update watermilldigital/wp-base` in each project.
+Release by bumping the version badge at the top of this README and the `Version:` header in `wp-base.php`, then tagging (`git tag v1.1.0 && git push origin v1.1.0`). The badge is static because shields.io can't read tags from a private repo. After tagging, run `composer update watermilldigital/wp-base` in each project.
 
 ## License
 
