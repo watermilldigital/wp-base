@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v2.0.0-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v2.1.0-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
@@ -29,6 +29,7 @@ Each feature is one file in `src/`:
 | `disable-emoji.php` | Removes WordPress's emoji detection script and styles. |
 | `varnish-purge.php` | Cloudways only (no-op elsewhere): purges the whole Varnish cache when published content, terms, menus or the Customizer change, and adds a "Purge cache" admin bar button. |
 | `login-limit.php` | Locks an IP out of wp-login.php for 15 minutes after 5 failed logins. Reads the real IP from Cloudflare's `CF-Connecting-IP` header, but only when the request came from a Cloudflare address. |
+| `svg-uploads.php` | Allows SVG uploads for users with `unfiltered_html` (Administrators; Super Admins on multisite), who can already publish raw scripts. Everyone else keeps the default file types, so there's nothing to sanitise. |
 
 Image handling (WebP conversion, compression, savings tracking) lives in [Grist](https://github.com/watermilldigital/grist), not here.
 
