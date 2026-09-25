@@ -15,6 +15,12 @@ add_filter( 'xmlrpc_methods', '__return_empty_array' );
 remove_action( 'wp_head', 'rsd_link' ); // Only advertises the XML-RPC endpoint above.
 
 /*
+ * The WordPress version in the generator tag (page <head>, RSS and Atom feeds)
+ * tells scanners exactly which vulnerabilities to try.
+ */
+add_filter( 'the_generator', '__return_empty_string' );
+
+/*
  * Application passwords allow password-based auth against the REST API.
  * Re-enable per project if an integration needs it.
  */

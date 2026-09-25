@@ -1,7 +1,7 @@
 <?php
 /**
  * Replaces WordPress branding with WaterMill's: the login logo, "— WordPress"
- * in page titles, the admin bar W menu, the admin footer, the dashboard's
+ * in page titles, the admin bar W menu and "Howdy", the admin footer, the dashboard's
  * WordPress panels, and the "WordPress" sender name on system emails.
  */
 
@@ -26,8 +26,27 @@ add_filter( 'login_title', $wp_base_drop_wordpress );
 add_filter( 'admin_title', $wp_base_drop_wordpress );
 unset( $wp_base_drop_wordpress );
 
-// The admin bar's W menu: About WordPress and WordPress.org links.
-add_action( 'admin_bar_menu', fn( WP_Admin_Bar $bar ) => $bar->remove_node( 'wp-logo' ), 999 );
+// The admin bar's W menu (About WordPress, WordPress.org links), and "Howdy, " before the
+// user's name. 9992: just after WordPress adds the account menu (wp_admin_bar_my_account_item, 9991).
+add_action(
+	'admin_bar_menu',
+	function ( WP_Admin_Bar $bar ): void {
+		$bar->remove_node( 'wp-logo' );
+
+		$account = $bar->get_node( 'my-account' );
+		if ( $account ) {
+			// The dropdown's screen-reader label is a separate copy in meta. Passing meta replaces all of it, so merge.
+			$bar->add_node(
+				array(
+					'id'    => 'my-account',
+					'title' => str_replace( 'Howdy, ', '', $account->title ),
+					'meta'  => array( 'menu_title' => str_replace( 'Howdy, ', '', $account->meta['menu_title'] ?? '' ) ) + $account->meta,
+				)
+			);
+		}
+	},
+	9992
+);
 
 add_filter( 'admin_footer_text', fn() => 'Built by <a href="https://watermilldigital.com">WaterMill Digital</a>' );
 

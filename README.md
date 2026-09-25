@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.1.0-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.2.0-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
@@ -23,14 +23,14 @@ Each feature is one file in `src/`:
 
 | File | What it does |
 | --- | --- |
-| `hardening.php` | Empties the XML-RPC method table, turns off application passwords, and blocks username enumeration (REST `/wp/v2/users` for logged-out requests, `?author=N`, and the users sitemap). |
+| `hardening.php` | Removes the WordPress version generator tag (page head and feeds), empties the XML-RPC method table, turns off application passwords, and blocks username enumeration (REST `/wp/v2/users` for logged-out requests, `?author=N`, and the users sitemap). |
 | `environment.php` | Anywhere `WP_ENVIRONMENT_TYPE` isn't `production`: sets noindex on every page and blocks all outgoing mail, logging each blocked email to `debug.log`. |
 | `disable-comments.php` | Turns off comments and pingbacks everywhere, and removes them from wp-admin and the dashboard. |
 | `disable-emoji.php` | Removes WordPress's emoji detection script and styles. |
 | `varnish-purge.php` | Cloudways only (no-op elsewhere): purges the whole Varnish cache when published content, terms, menus or the Customizer change, and adds a "Purge cache" admin bar button. |
 | `login-limit.php` | Locks an IP out of wp-login.php for 15 minutes after 5 failed logins. Reads the real IP from Cloudflare's `CF-Connecting-IP` header, but only when the request came from a Cloudflare address. |
 | `svg-uploads.php` | Allows SVG uploads for users with `unfiltered_html` (Administrators; Super Admins on multisite), who can already publish raw scripts. Everyone else keeps the default file types, so there's nothing to sanitise. |
-| `branding.php` | Replaces WordPress branding with WaterMill's: the login screen logo (linking to watermilldigital.com), "— WordPress" in login and wp-admin tab titles, the admin bar W menu, the admin footer ("Built by WaterMill Digital"), the dashboard Welcome panel and WordPress Events and News, and "WordPress" as the sender name on system emails (the site name instead). |
+| `branding.php` | Replaces WordPress branding with WaterMill's: the login screen logo (linking to watermilldigital.com), "— WordPress" in login and wp-admin tab titles, the admin bar W menu and "Howdy,", the admin footer ("Built by WaterMill Digital"), the dashboard Welcome panel and WordPress Events and News, and "WordPress" as the sender name on system emails (the site name instead). |
 
 Image handling (WebP conversion, compression, savings tracking) lives in [WP Image Compression](https://github.com/watermilldigital/wp-image-compression), not here.
 
