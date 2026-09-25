@@ -2,6 +2,8 @@
 /**
  * Plugin Name: Millstone
  * Description: Shared site policy: hardening, non-production safety, and trimming WordPress defaults.
+ * License: GPL-2.0-or-later
+ * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  *
  * Every file in src/ loads. To skip one on a project, list it (without .php) in wp-config.php:
  *     define( 'MILLSTONE_SKIP', array( 'disable-comments' ) );

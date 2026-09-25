@@ -2,7 +2,7 @@
     "name": "watermilldigital/millstone",
     "description": "Shared WordPress mu-plugin: hardening, non-production safety, and trimming WordPress defaults.",
     "type": "wordpress-muplugin",
-    "license": "proprietary",
+    "license": "GPL-2.0-or-later",
     "require": {
         "php": "^8.4",
         "composer/installers": "^2.0"
