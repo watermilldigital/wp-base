@@ -4,5 +4,5 @@ includes:
 parameters:
     level: 5
     paths:
-        - millstone.php
+        - wp-base.php
         - src

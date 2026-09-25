@@ -16,14 +16,14 @@
  * Blocking known IPs outright is done at Cloudflare (WAF → Tools), not here.
  */
 
-const MILLSTONE_LOGIN_MAX_FAILURES = 5;
-const MILLSTONE_LOGIN_LOCKOUT      = 15 * MINUTE_IN_SECONDS;
+const WP_BASE_LOGIN_MAX_FAILURES = 5;
+const WP_BASE_LOGIN_LOCKOUT      = 15 * MINUTE_IN_SECONDS;
 
 /*
  * https://www.cloudflare.com/ips/ — changes rarely. An out-of-date list
  * only means those edges fall back to the skip-limiting case above.
  */
-const MILLSTONE_CLOUDFLARE_RANGES = array(
+const WP_BASE_CLOUDFLARE_RANGES = array(
 	'173.245.48.0/20',
 	'103.21.244.0/22',
 	'103.22.200.0/22',
@@ -54,7 +54,7 @@ const MILLSTONE_CLOUDFLARE_RANGES = array(
  * @param string $ip   IP address.
  * @param string $cidr Range, e.g. 104.16.0.0/13.
  */
-function millstone_ip_in_range( string $ip, string $cidr ): bool {
+function wp_base_ip_in_range( string $ip, string $cidr ): bool {
 	[ $subnet, $bits ] = explode( '/', $cidr );
 	$ip                = inet_pton( $ip );
 	$subnet            = inet_pton( $subnet );
@@ -74,12 +74,12 @@ function millstone_ip_in_range( string $ip, string $cidr ): bool {
 /**
  * The visitor's public IP, or null if it can't be determined.
  */
-function millstone_login_ip(): ?string {
+function wp_base_login_ip(): ?string {
 	$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? sanitize_text_field( wp_unslash( $_SERVER['REMOTE_ADDR'] ) ) : '';
 
 	if ( isset( $_SERVER['HTTP_CF_CONNECTING_IP'] ) ) {
-		foreach ( MILLSTONE_CLOUDFLARE_RANGES as $range ) {
-			if ( millstone_ip_in_range( $ip, $range ) ) {
+		foreach ( WP_BASE_CLOUDFLARE_RANGES as $range ) {
+			if ( wp_base_ip_in_range( $ip, $range ) ) {
 				$ip = sanitize_text_field( wp_unslash( $_SERVER['HTTP_CF_CONNECTING_IP'] ) );
 				break;
 			}
@@ -96,18 +96,18 @@ function millstone_login_ip(): ?string {
  *
  * @param string $ip IP address.
  */
-function millstone_login_key( string $ip ): string {
-	return 'millstone_login_' . md5( $ip );
+function wp_base_login_key( string $ip ): string {
+	return 'wp_base_login_' . md5( $ip );
 }
 
 // Runs after core's password check (priority 20), so a locked IP is refused even with the right password.
 add_filter(
 	'authenticate',
 	function ( $user ) {
-		$ip = millstone_login_ip();
+		$ip = wp_base_login_ip();
 
-		if ( null !== $ip && (int) get_transient( millstone_login_key( $ip ) ) >= MILLSTONE_LOGIN_MAX_FAILURES ) {
-			return new WP_Error( 'millstone_login_locked', __( '<strong>Error:</strong> Too many failed login attempts. Try again in 15 minutes.', 'millstone' ) );
+		if ( null !== $ip && (int) get_transient( wp_base_login_key( $ip ) ) >= WP_BASE_LOGIN_MAX_FAILURES ) {
+			return new WP_Error( 'wp_base_login_locked', __( '<strong>Error:</strong> Too many failed login attempts. Try again in 15 minutes.', 'wp-base' ) );
 		}
 
 		return $user;
@@ -118,11 +118,11 @@ add_filter(
 add_action(
 	'wp_login_failed',
 	function (): void {
-		$ip = millstone_login_ip();
+		$ip = wp_base_login_ip();
 
 		if ( null !== $ip ) {
-			$key = millstone_login_key( $ip );
-			set_transient( $key, (int) get_transient( $key ) + 1, MILLSTONE_LOGIN_LOCKOUT );
+			$key = wp_base_login_key( $ip );
+			set_transient( $key, (int) get_transient( $key ) + 1, WP_BASE_LOGIN_LOCKOUT );
 		}
 	}
 );
@@ -130,10 +130,10 @@ add_action(
 add_action(
 	'wp_login',
 	function (): void {
-		$ip = millstone_login_ip();
+		$ip = wp_base_login_ip();
 
 		if ( null !== $ip ) {
-			delete_transient( millstone_login_key( $ip ) );
+			delete_transient( wp_base_login_key( $ip ) );
 		}
 	}
 );

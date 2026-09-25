@@ -1,5 +1,5 @@
 {
-    "name": "watermilldigital/millstone",
+    "name": "watermilldigital/wp-base",
     "description": "Shared WordPress mu-plugin: hardening, non-production safety, and trimming WordPress defaults.",
     "type": "wordpress-muplugin",
     "license": "GPL-2.0-or-later",

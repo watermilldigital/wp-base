@@ -5,7 +5,7 @@
  * hides existing ones, and removes them from the editor and wp-admin.
  *
  * Skip this on a project that needs comments (including WooCommerce
- * product reviews, which are comments) — see millstone.php.
+ * product reviews, which are comments) — see wp-base.php.
  */
 
 add_filter( 'comments_open', '__return_false' );

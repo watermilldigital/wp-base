@@ -6,12 +6,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v2.1.0-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.0.0-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
 
-# Millstone
+# WP Base
 
 The must-use plugin every WaterMill WordPress site starts from: security hardening, safety on non-production environments, and removal of WordPress defaults we never use.
 
@@ -31,15 +31,15 @@ Each feature is one file in `src/`:
 | `login-limit.php` | Locks an IP out of wp-login.php for 15 minutes after 5 failed logins. Reads the real IP from Cloudflare's `CF-Connecting-IP` header, but only when the request came from a Cloudflare address. |
 | `svg-uploads.php` | Allows SVG uploads for users with `unfiltered_html` (Administrators; Super Admins on multisite), who can already publish raw scripts. Everyone else keeps the default file types, so there's nothing to sanitise. |
 
-Image handling (WebP conversion, compression, savings tracking) lives in [Grist](https://github.com/watermilldigital/grist), not here.
+Image handling (WebP conversion, compression, savings tracking) lives in [WP Image Compression](https://github.com/watermilldigital/wp-image-compression), not here.
 
 ## Install
 
 The repo is private, so add it as a VCS repository and require it:
 
 ```sh
-composer config repositories.millstone vcs https://github.com/watermilldigital/millstone
-composer require watermilldigital/millstone:^2.0
+composer config repositories.wp-base vcs https://github.com/watermilldigital/wp-base
+composer require watermilldigital/wp-base:^3.0
 ```
 
 The project needs [`composer/installers`](https://github.com/composer/installers) with a `wordpress-muplugin` path, for example:
@@ -81,10 +81,10 @@ env:
 
 ## Skipping a feature
 
-Every file in `src/` loads by default. To skip any of them on a project, define `MILLSTONE_SKIP` in `wp-config.php`, listing file names without `.php`:
+Every file in `src/` loads by default. To skip any of them on a project, define `WP_BASE_SKIP` in `wp-config.php`, listing file names without `.php`:
 
 ```php
-define( 'MILLSTONE_SKIP', array( 'disable-comments' ) );
+define( 'WP_BASE_SKIP', array( 'disable-comments' ) );
 ```
 
 For example, WooCommerce product reviews are comments, so a shop needs `disable-comments` skipped.
@@ -98,7 +98,7 @@ composer check   # phpstan + phpcs (WordPress coding standards)
 
 To add a feature, drop a new file in `src/`. It loads automatically.
 
-Release by bumping the version badge at the top of this README, then tagging (`git tag v1.1.0 && git push origin v1.1.0`). The badge is static because shields.io can't read tags from a private repo. After tagging, run `composer update watermilldigital/millstone` in each project.
+Release by bumping the version badge at the top of this README, then tagging (`git tag v1.1.0 && git push origin v1.1.0`). The badge is static because shields.io can't read tags from a private repo. After tagging, run `composer update watermilldigital/wp-base` in each project.
 
 ## License
 
