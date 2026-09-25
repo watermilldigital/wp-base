@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v1.0.4-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/millstone/tags"><img src="https://img.shields.io/badge/version-v2.0.0-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
@@ -38,7 +38,7 @@ The repo is private, so add it as a VCS repository and require it:
 
 ```sh
 composer config repositories.millstone vcs https://github.com/watermilldigital/millstone
-composer require watermilldigital/millstone:^1.0
+composer require watermilldigital/millstone:^2.0
 ```
 
 The project needs [`composer/installers`](https://github.com/composer/installers) with a `wordpress-muplugin` path, for example:
