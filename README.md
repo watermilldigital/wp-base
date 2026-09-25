@@ -1,0 +1,91 @@
+<p>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/logo-dark.svg">
+    <img src=".github/logo-light.svg" alt="WaterMill" width="220" height="30">
+  </picture>
+</p>
+
+# Millstone
+
+The must-use plugin every WaterMill WordPress site starts from: security hardening, safety on non-production environments, and removal of WordPress defaults we never use.
+
+It's a must-use plugin so it loads whatever theme is active, and nobody can deactivate it from wp-admin.
+
+## What it does
+
+Each feature is one file in `src/`:
+
+| File | What it does |
+| --- | --- |
+| `hardening.php` | Empties the XML-RPC method table, turns off application passwords, and blocks username enumeration (REST `/wp/v2/users` for logged-out requests, `?author=N`, and the users sitemap). |
+| `environment.php` | Anywhere `WP_ENVIRONMENT_TYPE` isn't `production`: sets noindex on every page and blocks all outgoing mail, logging each blocked email to `debug.log`. |
+| `disable-comments.php` | Turns off comments and pingbacks everywhere, and removes them from wp-admin and the dashboard. |
+| `disable-emoji.php` | Removes WordPress's emoji detection script and styles. |
+| `webp-uploads.php` | Converts uploaded JPEGs to WebP, keeping the original JPEG as well. |
+
+## Install
+
+The repo is private, so add it as a VCS repository and require it:
+
+```sh
+composer config repositories.millstone vcs https://github.com/watermilldigital/millstone
+composer require watermilldigital/millstone:^1.0
+```
+
+The project needs [`composer/installers`](https://github.com/composer/installers) with a `wordpress-muplugin` path, for example:
+
+```json
+"extra": {
+    "installer-paths": {
+        "public/wp-content/mu-plugins/{$name}/": ["type:wordpress-muplugin"]
+    }
+}
+```
+
+WordPress only loads PHP files at the top level of `mu-plugins/`, not packages in subdirectories, so the project also needs a flat loader file such as `mu-plugins/autoloader.php`:
+
+```php
+<?php
+/**
+ * Plugin Name: MU Autoloader
+ * Description: Loads Composer-installed mu-plugin packages. Entry file is named after its directory.
+ */
+
+foreach ( glob( WPMU_PLUGIN_DIR . '/*', GLOB_ONLYDIR ) as $dir ) {
+	$entry = $dir . '/' . basename( $dir ) . '.php';
+
+	if ( file_exists( $entry ) ) {
+		require_once $entry;
+	}
+}
+```
+
+### CI
+
+GitHub Actions needs a token to install a private package. Create a fine-grained PAT with read-only **Contents** access to this repo, save it as a repository secret, and set it on the `composer install` step:
+
+```yaml
+env:
+  COMPOSER_AUTH: '{"github-oauth":{"github.com":"${{ secrets.COMPOSER_GITHUB_TOKEN }}"}}'
+```
+
+## Skipping a feature
+
+Every file in `src/` loads by default. To skip any of them on a project, define `MILLSTONE_SKIP` in `wp-config.php`, listing file names without `.php`:
+
+```php
+define( 'MILLSTONE_SKIP', array( 'disable-comments' ) );
+```
+
+For example, WooCommerce product reviews are comments, so a shop needs `disable-comments` skipped.
+
+## Development
+
+```sh
+composer install
+composer check   # phpstan + phpcs (WordPress coding standards)
+```
+
+To add a feature, drop a new file in `src/`. It loads automatically.
+
+Release by tagging a semver version (`git tag v1.1.0 && git push origin v1.1.0`), then run `composer update watermilldigital/millstone` in each project.
