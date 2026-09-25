@@ -1,6 +1,8 @@
 <?php
 /**
  * Plugin Name: WP Base
+ * Author: WaterMill Digital
+ * Author URI: https://watermilldigital.com
  * Description: Shared site policy: hardening, non-production safety, and trimming WordPress defaults.
  * License: GPL-2.0-or-later
  * License URI: https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
