@@ -6,3 +6,8 @@ parameters:
     paths:
         - wp-base.php
         - src
+    # WP-CLI's own stubs (php-stubs/wp-cli-stubs) require WordPress stubs 6.x or older, so skip only its class here.
+    ignoreErrors:
+        -
+            message: '#unknown class WP_CLI\.#'
+            path: src/cli.php

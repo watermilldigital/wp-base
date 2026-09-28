@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.4.0-blue" alt="Version"></a>
+  <a href="https://github.com/watermilldigital/wp-base/tags"><img src="https://img.shields.io/badge/version-v3.5.0-blue" alt="Version"></a>
   <img src="https://img.shields.io/badge/php-%5E8.4-777bb4" alt="PHP ^8.4">
   <img src="https://img.shields.io/badge/license-GPL--2.0--or--later-blue" alt="License: GPL-2.0-or-later">
 </p>
@@ -27,7 +27,8 @@ Each feature is one file in `src/`:
 | `environment.php` | Anywhere `WP_ENVIRONMENT_TYPE` isn't `production`: sets noindex on every page and blocks all outgoing mail, logging each blocked email to `debug.log`. |
 | `disable-comments.php` | Turns off comments and pingbacks everywhere, and removes them from wp-admin and the dashboard. |
 | `disable-emoji.php` | Removes WordPress's emoji detection script and styles. |
-| `varnish-purge.php` | Cloudways only (no-op elsewhere): purges the whole Varnish cache when published content, terms, menus or the Customizer change, and adds a "Purge cache" admin bar button. |
+| `varnish-purge.php` | Cloudways only (no-op elsewhere): purges the whole Varnish cache when published content, terms, menus or the Customizer change, and adds a "Purge cache" admin bar button. From the command line: `wp base purge-varnish`. |
+| `cli.php` | WP-CLI commands under `wp base` (`wp help base` lists them). `wp base purge-varnish` purges Varnish, e.g. `wp @production base purge-varnish` after changing settings on the live site. |
 | `login-limit.php` | Locks an IP out of wp-login.php for 15 minutes after 5 failed logins. Reads the real IP from Cloudflare's `CF-Connecting-IP` header, but only when the request came from a Cloudflare address. |
 | `svg-uploads.php` | Allows SVG uploads for users with `unfiltered_html` (Administrators; Super Admins on multisite), who can already publish raw scripts. Everyone else keeps the default file types, so there's nothing to sanitise. |
 | `limit-blocks.php` | Limits the block inserter to basic core blocks (paragraph, heading, list, quote, image, buttons, separator, table, embed) plus every non-core block, so the theme's own blocks and plugin blocks stay available. Layout belongs in custom blocks. A project adds core blocks with the `wp_base_core_blocks` filter. |
@@ -99,6 +100,8 @@ composer check   # phpstan + phpcs (WordPress coding standards)
 ```
 
 To add a feature, drop a new file in `src/`. It loads automatically.
+
+To add a WP-CLI command, add a public method to `WP_Base_CLI` in `src/cli.php`: its `@subcommand` tag names it (`wp base <name>`) and its docblock is the help text.
 
 Release by bumping the version badge at the top of this README and the `Version:` header in `wp-base.php`, then tagging (`git tag v1.1.0 && git push origin v1.1.0`). The badge is static because shields.io can't read tags from a private repo. After tagging, run `composer update watermilldigital/wp-base` in each project.
 
