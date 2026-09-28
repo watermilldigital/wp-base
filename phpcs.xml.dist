@@ -12,5 +12,10 @@
 		<exclude name="Squiz.Commenting.FileComment"/>
 	</rule>
 
+	<!-- Files in src/ are named for the feature they add (WP_BASE_SKIP uses the name), not for a class inside. -->
+	<rule ref="WordPress.Files.FileName.InvalidClassFileName">
+		<exclude-pattern>src/*</exclude-pattern>
+	</rule>
+
 	<config name="minimum_supported_wp_version" value="6.4"/>
 </ruleset>

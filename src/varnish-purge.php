@@ -7,13 +7,10 @@
  * anything else (e.g. plugin settings). Uses the same request Cloudways' own
  * Breeze plugin sends: PURGE /.* to the local Varnish with the site's Host.
  *
- * Only active when the request came through Varnish, so it does nothing on
- * other hosts, locally, or from WP-CLI (the deploy workflow purges itself).
+ * The hooks and button are only active when the request came through Varnish,
+ * so they do nothing on other hosts or locally. The purge function itself is
+ * always there, for `wp base purge-varnish` (cli.php).
  */
-
-if ( empty( $_SERVER['HTTP_X_VARNISH'] ) ) {
-	return;
-}
 
 /**
  * Queue a purge for the end of the request, so a save that fires several
@@ -29,18 +26,32 @@ function wp_base_queue_varnish_purge(): void {
  * Purge the site's whole Varnish cache. Non-blocking: never slows down a save.
  */
 function wp_base_purge_varnish(): void {
+	wp_base_varnish_purge_request( false );
+}
+
+/**
+ * Send the PURGE request.
+ *
+ * @param bool $blocking Wait for Varnish's answer (WP-CLI) rather than fire and forget.
+ * @return array<string, mixed>|WP_Error Varnish's response; an empty one when not blocking.
+ */
+function wp_base_varnish_purge_request( bool $blocking ) {
 	$home = wp_parse_url( home_url() );
 
-	wp_remote_request(
+	return wp_remote_request(
 		( $home['scheme'] ?? 'http' ) . '://127.0.0.1/.*',
 		array(
 			'method'    => 'PURGE',
 			'headers'   => array( 'Host' => $home['host'] ),
 			'sslverify' => false, // Connecting to 127.0.0.1, so the certificate never matches.
-			'blocking'  => false,
-			'timeout'   => 1,
+			'blocking'  => $blocking,
+			'timeout'   => $blocking ? 10 : 1,
 		)
 	);
+}
+
+if ( empty( $_SERVER['HTTP_X_VARNISH'] ) ) {
+	return;
 }
 
 // ponytail: purges the whole site on any change; per-URL purges (Cloudways' URLPURGE) if cache hit rate matters.
